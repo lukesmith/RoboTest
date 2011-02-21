@@ -40,14 +40,25 @@ namespace RoboTest.Tests
         [Test]
         public void cannot_move_rover_if_it_will_collide_with_another_rover()
         {
-            var mars = new Plateau(new Size(2, 2));
+            var mars = new Plateau(new Size(3, 3));
             var rover = new Rover(new Coordinate(1, 1), CameraDirection.North);
             mars.PlaceRover(rover);
 
-            var rover2 = new Rover(new Coordinate(0, 0), CameraDirection.North);
+            var rover2 = new Rover(new Coordinate(1, 2), CameraDirection.South);
             mars.PlaceRover(rover2);
 
             Assert.Throws<RoverCannotMoveException>(() => rover2.SendInstruction(RoverInstruction.M));
+        }
+
+        [Test]
+        public void can_move_rover()
+        {
+            var plateau = new Plateau(new Size(5, 5));
+            var rover = new Rover(new Coordinate(1, 2), CameraDirection.North);
+            plateau.PlaceRover(rover);
+
+            rover.SendInstruction(RoverInstruction.L);
+            rover.SendInstruction(RoverInstruction.M);
         }
     }
 }

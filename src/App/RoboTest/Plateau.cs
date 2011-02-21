@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RoboTest
 {
@@ -27,8 +28,13 @@ namespace RoboTest
             }
 
             this.rovers.Add(rover);
-            rover.OnMoving(this.CheckRoverDoesntLeavePlateau);
+            rover.OnMoving(this.DoesRoverStayOnPlateau);
             rover.OnMoving(this.CheckWhetherAnotherRoverExistsAtCoordinate);
+        }
+
+        public Rover[] GetRovers()
+        {
+            return this.rovers.ToArray();
         }
 
         private bool IsRoverAtCoordinate(Coordinate coordinate)
@@ -46,10 +52,10 @@ namespace RoboTest
 
         private bool CheckWhetherAnotherRoverExistsAtCoordinate(Coordinate arg)
         {
-            return this.IsRoverAtCoordinate(arg);
+            return !this.IsRoverAtCoordinate(arg);
         }
 
-        private bool CheckRoverDoesntLeavePlateau(Coordinate arg)
+        private bool DoesRoverStayOnPlateau(Coordinate arg)
         {
             return this.size.Contains(arg);
         }
