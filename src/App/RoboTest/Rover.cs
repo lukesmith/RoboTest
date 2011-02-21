@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RoboTest
 {
@@ -53,91 +54,94 @@ namespace RoboTest
             switch (instruction)
             {
                 case RoverInstruction.L:
-                    if (this.CameraDirection == CameraDirection.North)
-                    {
-                        this.CameraDirection = CameraDirection.West;
-                    }
-                    else if (this.CameraDirection == CameraDirection.East)
-                    {
-                        this.CameraDirection = CameraDirection.North;
-                    }
-                    else if (this.CameraDirection == CameraDirection.South)
-                    {
-                        this.CameraDirection = CameraDirection.East;
-                    }
-                    else if (this.CameraDirection == CameraDirection.West)
-                    {
-                        this.CameraDirection = CameraDirection.South;
-                    }
+                    this.TurnLeft();
 
                     break;
                 case RoverInstruction.R:
-                    if (this.CameraDirection == CameraDirection.North)
-                    {
-                        this.CameraDirection = CameraDirection.East;
-                    }
-                    else if (this.CameraDirection == CameraDirection.East)
-                    {
-                        this.CameraDirection = CameraDirection.South;
-                    }
-                    else if (this.CameraDirection == CameraDirection.South)
-                    {
-                        this.CameraDirection = CameraDirection.West;
-                    }
-                    else if (this.CameraDirection == CameraDirection.West)
-                    {
-                        this.CameraDirection = CameraDirection.North;
-                    }
+                    this.TurnRight();
 
                     break;
 
                 case RoverInstruction.M:
                     {
-                        Coordinate newCoordinate;
-
-                        if (this.CameraDirection == CameraDirection.North)
-                        {
-                            newCoordinate = new Coordinate(this.Coordinate.X, this.Coordinate.Y + 1);
-                        }
-                        else if (this.CameraDirection == CameraDirection.East)
-                        {
-                            newCoordinate = new Coordinate(this.Coordinate.X + 1, this.Coordinate.Y);
-                        }
-                        else if (this.CameraDirection == CameraDirection.South)
-                        {
-                            newCoordinate = new Coordinate(this.Coordinate.X, this.Coordinate.Y - 1);
-                        }
-                        else if (this.CameraDirection == CameraDirection.West)
-                        {
-                            newCoordinate = new Coordinate(this.Coordinate.X - 1, this.Coordinate.Y);
-                        }
-                        else
-                        {
-                            throw new InvalidOperationException();
-                        }
-
-                        bool canMove = true;
-                        foreach (var movingCallback in this.movingCallbacks)
-                        {
-                            canMove = movingCallback(newCoordinate);
-
-                            if (canMove == false)
-                            {
-                                break;
-                            }
-                        }
-
-                        if (canMove)
-                        {
-                            this.Coordinate = newCoordinate;
-                        }
-                        else
-                        {
-                            throw new RoverCannotMoveException();
-                        }
-
+                        this.MoveRover();
                         break;
                     }
+            }
+        }
+
+        private void TurnLeft()
+        {
+            if (this.CameraDirection == CameraDirection.North)
+            {
+                this.CameraDirection = CameraDirection.West;
+            }
+            else if (this.CameraDirection == CameraDirection.East)
+            {
+                this.CameraDirection = CameraDirection.North;
+            }
+            else if (this.CameraDirection == CameraDirection.South)
+            {
+                this.CameraDirection = CameraDirection.East;
+            }
+            else if (this.CameraDirection == CameraDirection.West)
+            {
+                this.CameraDirection = CameraDirection.South;
+            }
+        }
+
+        private void TurnRight()
+        {
+            if (this.CameraDirection == CameraDirection.North)
+            {
+                this.CameraDirection = CameraDirection.East;
+            }
+            else if (this.CameraDirection == CameraDirection.East)
+            {
+                this.CameraDirection = CameraDirection.South;
+            }
+            else if (this.CameraDirection == CameraDirection.South)
+            {
+                this.CameraDirection = CameraDirection.West;
+            }
+            else if (this.CameraDirection == CameraDirection.West)
+            {
+                this.CameraDirection = CameraDirection.North;
+            }
+        }
+
+        private void MoveRover()
+        {
+            Coordinate newCoordinate;
+
+            if (this.CameraDirection == CameraDirection.North)
+            {
+                newCoordinate = new Coordinate(this.Coordinate.X, this.Coordinate.Y + 1);
+            }
+            else if (this.CameraDirection == CameraDirection.East)
+            {
+                newCoordinate = new Coordinate(this.Coordinate.X + 1, this.Coordinate.Y);
+            }
+            else if (this.CameraDirection == CameraDirection.South)
+            {
+                newCoordinate = new Coordinate(this.Coordinate.X, this.Coordinate.Y - 1);
+            }
+            else if (this.CameraDirection == CameraDirection.West)
+            {
+                newCoordinate = new Coordinate(this.Coordinate.X - 1, this.Coordinate.Y);
+            }
+            else
+            {
+                throw new InvalidOperationException();
+            }
+
+            if (this.movingCallbacks.All(x => x(newCoordinate)))
+            {
+                this.Coordinate = newCoordinate;
+            }
+            else
+            {
+                throw new RoverCannotMoveException();
             }
         }
     }

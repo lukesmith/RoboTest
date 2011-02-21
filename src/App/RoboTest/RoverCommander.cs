@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace RoboTest
@@ -16,31 +15,32 @@ namespace RoboTest
                 throw new ArgumentNullException("instructions");
             }
 
-            var lines = instructions.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            var lines = instructions.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
 
-            if (lines.Length != 5)
+            // there must be at least the plateau size and 1 rover present in the instructions
+            if (lines.Length < 3)
             {
-                throw new InvalidOperationException("Incorrect number of instructions");
+                throw new ArgumentException("Incorrect number of instructions present.");
+            }
+
+            // rovers require 2 lines of instructions
+            if ((lines.Length - 1) % 2 != 0)
+            {
+                throw new ArgumentException("Invalid number of instructions per rover.");
             }
 
             this.CreatePlateau(lines[0]);
-            var roverA = this.CreateRover(lines[1]);
-            var roverB = this.CreateRover(lines[3]);
 
-            var roverAInstructions = this.CreateRoverInstructions(lines[2]);
-            var roverBInstructions = this.CreateRoverInstructions(lines[4]);
-
-            this.plateau.PlaceRover(roverA);
-            this.plateau.PlaceRover(roverB);
-
-            foreach (var instruction in roverAInstructions)
+            for (int i = 1; i < lines.Length; i = i + 2)
             {
-                roverA.SendInstruction(instruction);
-            }
+                var rover = this.CreateRover(lines[i]);
+                var roverInstructions = this.CreateRoverInstructions(lines[i + 1]);
+                this.plateau.PlaceRover(rover);
 
-            foreach (var instruction in roverBInstructions)
-            {
-                roverB.SendInstruction(instruction);
+                foreach (var instruction in roverInstructions)
+                {
+                    rover.SendInstruction(instruction);
+                }
             }
         }
 
@@ -105,7 +105,7 @@ namespace RoboTest
                 var x = Convert.ToInt32(matches.Groups["X"].Value);
                 var y = Convert.ToInt32(matches.Groups["Y"].Value);
                 var directionValue = matches.Groups["Direction"].Value;
-                CameraDirection cameraDirection = CameraDirection.North;
+                var cameraDirection = CameraDirection.North;
 
                 if (directionValue == "N")
                 {
