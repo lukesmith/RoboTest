@@ -49,16 +49,5 @@ namespace RoboTest.Tests
 
             Assert.Throws<RoverCannotMoveException>(() => rover2.SendInstruction(RoverInstruction.M));
         }
-
-        [Test]
-        public void can_move_rover()
-        {
-            var plateau = new Plateau(new Size(5, 5));
-            var rover = new Rover(new Coordinate(1, 2), CameraDirection.North);
-            plateau.PlaceRover(rover);
-
-            rover.SendInstruction(RoverInstruction.L);
-            rover.SendInstruction(RoverInstruction.M);
-        }
     }
 }
