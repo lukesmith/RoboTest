@@ -21,16 +21,37 @@ namespace RoboTest
                 throw new InvalidOperationException("Cannot place a rover outside of the plateau.");
             }
 
-            foreach (var existingRover in this.rovers)
+            if (this.IsRoverAtCoordinate(rover.Coordinate))
             {
-                if (existingRover.Coordinate == rover.Coordinate)
-                {
-                    throw new InvalidOperationException("Cannot place rover on top of another rover.");
-                }
+                throw new InvalidOperationException("Cannot place rover on top of another rover.");
             }
 
             this.rovers.Add(rover);
-            rover.AddToPlateau(this);
+            rover.OnMoving(this.CheckRoverDoesntLeavePlateau);
+            rover.OnMoving(this.CheckWhetherAnotherRoverExistsAtCoordinate);
+        }
+
+        private bool IsRoverAtCoordinate(Coordinate coordinate)
+        {
+            foreach (var existingRover in this.rovers)
+            {
+                if (existingRover.Coordinate == coordinate)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool CheckWhetherAnotherRoverExistsAtCoordinate(Coordinate arg)
+        {
+            return this.IsRoverAtCoordinate(arg);
+        }
+
+        private bool CheckRoverDoesntLeavePlateau(Coordinate arg)
+        {
+            return this.size.Contains(arg);
         }
     }
 }

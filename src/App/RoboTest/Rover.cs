@@ -1,24 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace RoboTest
 {
     public class Rover
     {
-        private Plateau plateau;
+        private readonly IList<Func<Coordinate, bool>> movingCallbacks;
 
         public Rover(Coordinate coordinate, CameraDirection cameraDirection)
         {
             Coordinate = coordinate;
             CameraDirection = cameraDirection;
+            this.movingCallbacks = new List<Func<Coordinate, bool>>();
         }
 
         public Coordinate Coordinate { get; set; }
         
         public CameraDirection CameraDirection { get; set; }
 
-        public void AddToPlateau(Plateau plateau)
+        public void OnMoving(Func<Coordinate, bool> callback)
         {
-            this.plateau = plateau;
+            this.movingCallbacks.Add(callback);
         }
 
         public override string ToString()
@@ -114,7 +116,26 @@ namespace RoboTest
                             throw new InvalidOperationException();
                         }
 
-                        this.Coordinate = newCoordinate;
+                        bool canMove = true;
+                        foreach (var movingCallback in this.movingCallbacks)
+                        {
+                            canMove = movingCallback(newCoordinate);
+
+                            if (canMove == false)
+                            {
+                                break;
+                            }
+                        }
+
+                        if (canMove)
+                        {
+                            this.Coordinate = newCoordinate;
+                        }
+                        else
+                        {
+                            throw new RoverCannotMoveException();
+                        }
+
                         break;
                     }
             }

@@ -23,5 +23,31 @@ namespace RoboTest.Tests
 
             Assert.Throws<InvalidOperationException>(() => mars.PlaceRover(new Rover(new Coordinate(2, 2), CameraDirection.North)));
         }
+
+        [TestCase(0, 0, CameraDirection.West)]
+        [TestCase(0, 0, CameraDirection.East)]
+        [TestCase(0, 0, CameraDirection.South)]
+        [TestCase(0, 0, CameraDirection.North)]
+        public void cannot_move_rover_outside_of_plateau(int x, int y, CameraDirection cameraDirection)
+        {
+            var mars = new Plateau(new Size(1, 1));
+            var rover = new Rover(new Coordinate(x, y), cameraDirection);
+            mars.PlaceRover(rover);
+
+            Assert.Throws<RoverCannotMoveException>(() => rover.SendInstruction(RoverInstruction.M));
+        }
+
+        [Test]
+        public void cannot_move_rover_if_it_will_collide_with_another_rover()
+        {
+            var mars = new Plateau(new Size(2, 2));
+            var rover = new Rover(new Coordinate(1, 1), CameraDirection.North);
+            mars.PlaceRover(rover);
+
+            var rover2 = new Rover(new Coordinate(0, 0), CameraDirection.North);
+            mars.PlaceRover(rover2);
+
+            Assert.Throws<RoverCannotMoveException>(() => rover2.SendInstruction(RoverInstruction.M));
+        }
     }
 }

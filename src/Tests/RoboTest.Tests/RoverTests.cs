@@ -69,5 +69,14 @@ namespace RoboTest.Tests
 
             Assert.AreEqual(new Coordinate(1, 0), rover.Coordinate);
         }
+
+        [Test]
+        public void cannot_move_rover()
+        {
+            var rover = new Rover(new Coordinate(0, 0), CameraDirection.West);
+            rover.OnMoving(c => false);
+
+            Assert.Throws<RoverCannotMoveException>(() => rover.SendInstruction(RoverInstruction.M));
+        }
     }
 }
