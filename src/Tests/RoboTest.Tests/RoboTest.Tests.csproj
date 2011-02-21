@@ -55,6 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="PlateauTests.cs" />
+    <Compile Include="RoverTests.cs" />
     <Compile Include="SizeTests.cs" />
     <Compile Include="send_rover_instructions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

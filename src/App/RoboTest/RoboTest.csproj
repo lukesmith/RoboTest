@@ -14,7 +14,8 @@
     <RootNamespace>RoboTest</RootNamespace>
     <AssemblyName>RoboTest</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <StyleCopTreatErrorsAsWarnings>false</StyleCopTreatErrorsAsWarnings>
     <StyleCopAnalysisTarget Condition=" '$(StyleCopAnalysisTarget)' == '' AND '$(ToolsDir)' != ''">$(ToolsDir)StyleCop\Microsoft.SourceAnalysis.targets</StyleCopAnalysisTarget>
@@ -50,8 +51,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CameraDirection.cs" />
+    <Compile Include="Coordinate.cs" />
+    <Compile Include="Plateau.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rover.cs" />
+    <Compile Include="RoverInstruction.cs" />
+    <Compile Include="Size.cs" />
+    <Compile Include="RoverCommander.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Condition="'$(StyleCopAnalysisTarget)' != ''" Project="$(StyleCopAnalysisTarget)" />
